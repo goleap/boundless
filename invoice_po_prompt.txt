@@ -1,0 +1,162 @@
+
+Extract all entities and their values from the uploaded PDF invoice or purchase order and return a structured JSON object with the following rules:
+
+1. General Formatting Rules
+Use camelCase for all field names.
+All date values should be in the format %m-%d-%Y (e.g., "05-11-2022").
+Field names should not contain currency information (e.g., "subtotal" instead of "subtotalRmb").
+
+2. Document Type Identification
+Identify whether the document is an invoice or a purchase order, and include this in the JSON:
+"documentType": "invoice" | "purchaseOrder"
+
+3. Field Mappings for Invoice & PO Numbers
+Invoice and Purchase order numbers should be mapped to "id".
+Invoice or purchase order dates should be mapped to date.
+
+4. Seller & Buyer Information
+Both seller and buyer details should be structured in JSON objects containing:
+    "buyer": {
+      "name": "string",
+      "address": "string",
+      "contact": {
+        "name": "string",
+        "phone": "string"
+      }
+    },
+    "seller": {
+      "name": "string",
+      "address": "string",
+      "contact": {
+        "name": "string",
+        "phone": "string"
+      }
+    }
+
+Ensure all phone number fields are named phone or have the suffix phone.
+
+5. Order Items Formatting
+All order items should be part of an array named items.
+If "fnsku" is specified then map it as "sku"
+Each item should contain the following required fields:
+    {
+      "sku": "string",
+      "msku": "string",
+      "description": "string",
+      "quantity": "number",
+      "amountPerUnit": {
+        "value": "number",
+        "currency": "string"
+      },
+      "totalAmount": {
+        "value": "number",
+        "currency": "string"
+      },
+      "additional": {
+        "key": "value"
+      }
+    }
+Any extra item details like "id" should be stored inside the additional object.
+
+6. Totals & Amounts
+All amounts should be structured with value and currency.
+Example:
+    {
+      "subtotal": {
+        "value": 160470,
+        "currency": "RMB"
+      },
+      "freight": {
+        "value": 0.00,
+        "currency": "RMB"
+      },
+      "grandTotal": {
+        "value": 24391.07,
+        "currency": "USD"
+      }
+    }
+Exchange rate values should be provided separately (if applicable).
+
+7. Bank Deposit Information
+Ensure all bank deposit information is extracted and stored under bankDetails:
+    "bankDetails": {
+      "beneficiaryName": "string",
+      "bankName": "string",
+      "beneficiaryAccountNumber": "string",
+      "swiftCode": "string"
+    }
+
+8. Payment & Delivery Details
+Include payment terms as "paymentTerms".
+If available, extract the estimated arrival date and store it as "estimatedArrival".
+
+9. Handling Optional Fields
+If a document lacks certain fields, either Omit the field entirely, or Include it as null if necessary.
+Example:
+"Freight": null
+
+Final Expected JSON Structure
+    {
+      "documentType": "purchaseOrder",
+      "id": "SMKD20220511001",
+      "date": "05-11-2022",
+      "buyer": {
+        "name": "Smarkids, Inc",
+        "address": "9169 W State St. Suite 538, Garden City, ID 83714, United States",
+        "contact": {
+          "name": "Edith Wang",
+          "phone": "13684998151"
+        }
+      },
+      "seller": {
+        "name": "China National Publications Import & Export Guangzhou Co., Ltd.",
+        "address": "No.856, East Huangpu Avenue, Futian District, Shenzhen, Guangdong, China",
+        "contact": {
+          "name": "Shaoming Ye",
+          "phone": "02034203625"
+        },
+        "bankDetails": {
+          "beneficiaryName": "China National Publications Import & Export Guangzhou Co., Ltd.",
+          "bankName": "China Merchants Bank Guangzhou YingLongPlaza Branch",
+          "beneficiaryAccountNumber": "999008292610555",
+          "swiftCode": "CMBCCNBS"
+        }
+      },
+      "items": [
+        {
+          "sku": "X002UA23VX",
+          "msku": "SDAT-BS01",
+          "description": "Smarkids Dinosaur DIY Assembled Toy Series",
+          "quantity": 1827,
+          "amountPerUnit": {
+            "value": 10.08,
+            "currency": "RMB"
+          },
+          "totalAmount": {
+            "value": 18416.16,
+            "currency": "RMB"
+          },
+          "additional": {
+            "no.": "SFY166-11A",
+            "unitsPerCarton": 63,
+            "cartonCount": 29
+          }
+        }
+      ],
+      "totals": {
+        "subtotal": {
+          "value": 115211.52,
+          "currency": "RMB"
+        },
+        "freight": {
+          "value": 0.00,
+          "currency": "RMB"
+        },
+        "grandTotal": {
+          "value": 17158.61,
+          "currency": "USD"
+        }
+      },
+      "paymentTerms": "100% Deposit",
+      "estimatedArrival": "Within 30 days after receiving the Deposit"
+    }

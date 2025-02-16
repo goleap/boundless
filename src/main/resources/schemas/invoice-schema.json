@@ -1,0 +1,253 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "documentType": {
+      "type": "string",
+      "enum": [
+        "invoice",
+        "purchaseOrder"
+      ],
+      "description": "Specifies whether the document is an invoice or a purchase order."
+    },
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the invoice or purchase order."
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{2}-\\d{2}-\\d{4}$",
+      "description": "The date of the invoice or purchase order in MM-DD-YYYY format."
+    },
+    "buyer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string",
+              "pattern": "^[0-9\\-\\+\\(\\) ]+$"
+            }
+          },
+          "required": [
+            "name",
+            "phone"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "address",
+        "contact"
+      ]
+    },
+    "seller": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string",
+              "pattern": "^[0-9\\-\\+\\(\\) ]+$"
+            }
+          },
+          "required": [
+            "name",
+            "phone"
+          ]
+        },
+        "bankDetails": {
+          "type": "object",
+          "properties": {
+            "beneficiaryName": {
+              "type": "string"
+            },
+            "bankName": {
+              "type": "string"
+            },
+            "beneficiaryAccountNumber": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "swiftCode": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "beneficiaryName",
+            "bankName",
+            "beneficiaryAccountNumber",
+            "swiftCode"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "address",
+        "contact",
+        "bankDetails"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "msku": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "amountPerUnit": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value",
+              "currency"
+            ]
+          },
+          "totalAmount": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value",
+              "currency"
+            ]
+          },
+          "additional": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "description",
+          "quantity",
+          "amountPerUnit",
+          "totalAmount"
+        ]
+      }
+    },
+    "totals": {
+      "type": "object",
+      "properties": {
+        "subtotal": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "currency": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value",
+            "currency"
+          ]
+        },
+        "freight": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "currency": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value",
+            "currency"
+          ]
+        },
+        "grandTotal": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "currency": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value",
+            "currency"
+          ]
+        }
+      },
+      "required": [
+        "subtotal",
+        "grandTotal"
+      ]
+    },
+    "paymentTerms": {
+      "type": "string"
+    },
+    "estimatedArrival": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "documentType",
+    "id",
+    "date",
+    "buyer",
+    "seller",
+    "items",
+    "totals",
+    "paymentTerms"
+  ]
+}
