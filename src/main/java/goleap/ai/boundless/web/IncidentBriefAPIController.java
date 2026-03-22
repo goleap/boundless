@@ -1,8 +1,8 @@
 package goleap.ai.boundless.web;
 
 import com.google.common.flogger.FluentLogger;
-import goleap.ai.boundless.model.Invoices.Result;
-import goleap.ai.boundless.service.InvoicesProcessor;
+import goleap.ai.boundless.model.IncidentBriefs.Result;
+import goleap.ai.boundless.service.IncidentBriefsProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +21,13 @@ import java.util.concurrent.CompletableFuture;
 import static goleap.ai.boundless.service.Constants.DEFAULT_ACCOUNT;
 
 @Controller
-public class InvoiceAPIController {
+public class IncidentBriefAPIController {
     private static final FluentLogger LOG = FluentLogger.forEnclosingClass();
 
-    private final InvoicesProcessor processor;
+    private final IncidentBriefsProcessor processor;
 
     @Autowired
-    public InvoiceAPIController(InvoicesProcessor processor) {
+    public IncidentBriefAPIController(IncidentBriefsProcessor processor) {
         this.processor = processor;
     }
 
@@ -51,15 +51,15 @@ public class InvoiceAPIController {
         return "redirect:/";
     }
 
-    @GetMapping(path = "/v1/invoices", produces = "application/json")
+    @GetMapping(path = "/v1/incident-briefs", produces = "application/json")
     @ResponseBody
     public ResponseEntity<Result> getData(@RequestParam(required = false) String accountId) {
         try {
             if (!StringUtils.hasLength(accountId)) {
                 accountId = DEFAULT_ACCOUNT;
             }
-            LOG.atInfo().log("Received POST account=[%s]", accountId);
-            var result = processor.loadInvoices();
+            LOG.atInfo().log("Received GET account=[%s]", accountId);
+            var result = processor.loadIncidentBriefs();
             return ResponseEntity.status(HttpStatus.OK).body(new Result(result.size(), 0, -1, result));
         } catch (Exception e) {
             LOG.atSevere().withCause(e).log();
@@ -68,10 +68,10 @@ public class InvoiceAPIController {
     }
 
     @GetMapping("/")
-    public String listInvoices(Model model) {
+    public String listIncidentBriefs(Model model) {
         try {
-            var result = processor.loadInvoices();
-            model.addAttribute("invoices", result);
+            var result = processor.loadIncidentBriefs();
+            model.addAttribute("incidentBriefs", result);
         } catch (Exception e) {
             LOG.atSevere().withCause(e).log();
         }

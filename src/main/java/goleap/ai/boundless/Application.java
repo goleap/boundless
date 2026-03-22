@@ -1,6 +1,6 @@
 package goleap.ai.boundless;
 
-import goleap.ai.boundless.service.InvoicesProcessor;
+import goleap.ai.boundless.service.IncidentBriefsProcessor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +16,7 @@ public class Application {
     }
 
     @Bean
-    CommandLineRunner init(InvoicesProcessor processor) {
+    CommandLineRunner init(IncidentBriefsProcessor processor) {
         return (args) -> {
             processor.init();
         };

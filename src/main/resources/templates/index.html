@@ -9,7 +9,7 @@
         <form method="POST" enctype="multipart/form-data" action="/v1/upload">
             <table>
                 <tr>
-                    <td>Invoice to upload:</td>
+                    <td>Incident Brief to upload:</td>
                     <td><input type="file" name="file"/></td>
                 </tr>
                 <tr>
@@ -22,8 +22,8 @@
 
     <div>
         <ul>
-            <li th:each="invoice : ${invoices}">
-                <a href="" th:text="${invoice}"/>
+            <li th:each="incidentBrief : ${incidentBriefs}">
+                <a href="" th:text="${incidentBrief}"/>
             </li>
         </ul>
     </div>

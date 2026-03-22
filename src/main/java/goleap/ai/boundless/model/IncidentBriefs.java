@@ -12,22 +12,22 @@ import lombok.NoArgsConstructor;
 import java.sql.Date;
 import java.util.List;
 
-public interface Invoices {
+public interface IncidentBriefs {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     @Entity
-    @Table(name = "invoices")
-    class Invoice {
+    @Table(name = "incident_briefs")
+    class IncidentBrief {
         @Id
         @JsonProperty
         private String id;
 
-        @JsonProperty("invoiceNumber")
-        private String invoiceNumber;
+        @JsonProperty("briefNumber")
+        private String briefNumber;
 
-        @JsonProperty("invoiceTotal")
+        @JsonProperty("briefTotal")
         private String total;
 
         @JsonProperty("sellerName")
@@ -47,7 +47,7 @@ public interface Invoices {
             int total,
             int from,
             int limit,
-            List<Invoice> invoices) {
+            List<IncidentBrief> incidentBriefs) {
     }
 
     record PdfSource(String sourceId) {

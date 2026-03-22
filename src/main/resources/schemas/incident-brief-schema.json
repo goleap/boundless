@@ -5,19 +5,18 @@
     "documentType": {
       "type": "string",
       "enum": [
-        "invoice",
-        "purchaseOrder"
+        "incidentBrief"
       ],
-      "description": "Specifies whether the document is an invoice or a purchase order."
+      "description": "Specifies the document type as an incident brief."
     },
     "id": {
       "type": "string",
-      "description": "The unique identifier for the invoice or purchase order."
+      "description": "The unique identifier for the incident brief."
     },
     "date": {
       "type": "string",
       "pattern": "^\\d{2}-\\d{2}-\\d{4}$",
-      "description": "The date of the invoice or purchase order in MM-DD-YYYY format."
+      "description": "The date of the incident brief in MM-DD-YYYY format."
     },
     "buyer": {
       "type": "object",

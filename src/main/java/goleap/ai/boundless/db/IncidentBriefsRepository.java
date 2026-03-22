@@ -1,8 +1,8 @@
 package goleap.ai.boundless.db;
 
-import goleap.ai.boundless.model.Invoices.Invoice;
+import goleap.ai.boundless.model.IncidentBriefs.IncidentBrief;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface InvoicesRepository extends CrudRepository<Invoice, String> {}
+public interface IncidentBriefsRepository extends CrudRepository<IncidentBrief, String> {}

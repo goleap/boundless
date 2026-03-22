@@ -1,5 +1,5 @@
 
-Extract all entities and their values from the uploaded PDF invoice or purchase order and return a structured JSON object with the following rules:
+Extract all entities and their values from the uploaded PDF incident brief and return a structured JSON object with the following rules:
 
 1. General Formatting Rules
 Use camelCase for all field names.
@@ -7,12 +7,12 @@ All date values should be in the format %m-%d-%Y (e.g., "05-11-2022").
 Field names should not contain currency information (e.g., "subtotal" instead of "subtotalRmb").
 
 2. Document Type Identification
-Identify whether the document is an invoice or a purchase order, and include this in the JSON:
-"documentType": "invoice" | "purchaseOrder"
+Identify the document as an incident brief and include this in the JSON:
+"documentType": "incidentBrief"
 
-3. Field Mappings for Invoice & PO Numbers
-Invoice and Purchase order numbers should be mapped to "id".
-Invoice or purchase order dates should be mapped to date.
+3. Field Mappings for Incident Brief Numbers
+Incident brief numbers should be mapped to "id".
+Incident brief dates should be mapped to date.
 
 4. Seller & Buyer Information
 Both seller and buyer details should be structured in JSON objects containing:
@@ -97,7 +97,7 @@ Example:
 
 Final Expected JSON Structure
     {
-      "documentType": "purchaseOrder",
+      "documentType": "incidentBrief",
       "id": "SMKD20220511001",
       "date": "05-11-2022",
       "buyer": {

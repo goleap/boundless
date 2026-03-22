@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.f4b6a3.uuid.UuidCreator;
 import com.google.common.flogger.FluentLogger;
-import goleap.ai.boundless.db.InvoicesRepository;
-import goleap.ai.boundless.model.Invoices.Extract;
-import goleap.ai.boundless.model.Invoices.Invoice;
-import goleap.ai.boundless.model.Invoices.PdfSource;
+import goleap.ai.boundless.db.IncidentBriefsRepository;
+import goleap.ai.boundless.model.IncidentBriefs.Extract;
+import goleap.ai.boundless.model.IncidentBriefs.IncidentBrief;
+import goleap.ai.boundless.model.IncidentBriefs.PdfSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -29,22 +29,22 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class InvoicesProcessor {
+public class IncidentBriefsProcessor {
     private static final FluentLogger LOG = FluentLogger.forEnclosingClass();
 
-    @Value("${invoices.upload.location}")
+    @Value("${incident-briefs.upload.location}")
     protected String uploadLocation;
 
     private final ObjectMapper objectMapper;
     private final PdfAPIHandler pdfApiHandler;
-    private final InvoicesRepository invoicesRepository;
+    private final IncidentBriefsRepository incidentBriefsRepository;
 
     @Autowired
-    public InvoicesProcessor(
-            ObjectMapper objectMapper, PdfAPIHandler pdfApiHandler, InvoicesRepository invoicesRepository) {
+    public IncidentBriefsProcessor(
+            ObjectMapper objectMapper, PdfAPIHandler pdfApiHandler, IncidentBriefsRepository incidentBriefsRepository) {
         this.objectMapper = objectMapper;
         this.pdfApiHandler = pdfApiHandler;
-        this.invoicesRepository = invoicesRepository;
+        this.incidentBriefsRepository = incidentBriefsRepository;
     }
 
     private static void validate(String accountId, MultipartFile file) {
@@ -56,7 +56,7 @@ public class InvoicesProcessor {
         }
     }
 
-    private CompletableFuture<Optional<Invoice>> extractData(String accountId, String sourceId) {
+    private CompletableFuture<Optional<IncidentBrief>> extractData(String accountId, String sourceId) {
         CompletableFuture<String> dataF = pdfApiHandler.extractPdfData(sourceId);
         return dataF.thenApply(data -> parseExtractData(data, accountId, sourceId));
     }
@@ -67,25 +67,25 @@ public class InvoicesProcessor {
         return sanitized;
     }
 
-    private Optional<Invoice> parseExtractData(String data, String accountId, String sourceId) {
+    private Optional<IncidentBrief> parseExtractData(String data, String accountId, String sourceId) {
         try {
             var extract = objectMapper.readValue(data, Extract.class);
-            var invoice = objectMapper.readValue(sanitize(extract.content()), Invoice.class);
-            invoice.setAccountId(accountId);
-            invoice.setPdfSourceId(sourceId);
-            return Optional.of(invoice);
+            var incidentBrief = objectMapper.readValue(sanitize(extract.content()), IncidentBrief.class);
+            incidentBrief.setAccountId(accountId);
+            incidentBrief.setPdfSourceId(sourceId);
+            return Optional.of(incidentBrief);
         } catch (Exception e) {
             LOG.atSevere().withCause(e).log();
         }
         return Optional.empty();
     }
 
-    private Boolean storeData(Invoice invoiceData, MultipartFile multipartFile) {
+    private Boolean storeData(IncidentBrief incidentBriefData, MultipartFile multipartFile) {
         var hash = getHash(multipartFile);
         if (hash.isPresent()) {
-            invoiceData.setId(hash.get());
-            LOG.atInfo().log("Saving invoice [%s]", invoiceData.toString());
-            invoicesRepository.save(invoiceData);
+            incidentBriefData.setId(hash.get());
+            LOG.atInfo().log("Saving incident brief [%s]", incidentBriefData.toString());
+            incidentBriefsRepository.save(incidentBriefData);
             return true;
         } else {
             LOG.atSevere().log("Failed to store file %s", multipartFile.getOriginalFilename());
@@ -102,10 +102,10 @@ public class InvoicesProcessor {
             CompletableFuture<String> sourceIdJsonF = pdfApiHandler.uploadPdf(multipartFile);
             CompletableFuture<Boolean> storedDataF = sourceIdJsonF.thenCompose(sourceIdJson -> {
                 PdfSource pdfSource = parsePdfSource(sourceIdJson);
-                CompletableFuture<Optional<Invoice>> invoiceOptF = extractData(accountId, pdfSource.sourceId());
-                return invoiceOptF.thenCompose(invoiceOpt -> {
-                    if (invoiceOpt.isPresent()) {
-                        return CompletableFuture.completedFuture(storeData(invoiceOpt.get(), multipartFile));
+                CompletableFuture<Optional<IncidentBrief>> incidentBriefOptF = extractData(accountId, pdfSource.sourceId());
+                return incidentBriefOptF.thenCompose(incidentBriefOpt -> {
+                    if (incidentBriefOpt.isPresent()) {
+                        return CompletableFuture.completedFuture(storeData(incidentBriefOpt.get(), multipartFile));
                     } else {
                         return CompletableFuture.failedFuture(new RuntimeException(
                                 "Failed to extract data from " + multipartFile.getOriginalFilename()));
@@ -131,7 +131,7 @@ public class InvoicesProcessor {
     private boolean validateFileExists(MultipartFile multipartFile) {
         var hash = getHash(multipartFile);
         if (hash.isPresent()) {
-            return invoicesRepository.existsById(hash.get());
+            return incidentBriefsRepository.existsById(hash.get());
         } else {
             LOG.atSevere().log("Failed to validate file existence for %s", multipartFile.getOriginalFilename());
             return false;
@@ -181,9 +181,9 @@ public class InvoicesProcessor {
         }
     }
 
-    public List<Invoice> loadInvoices() {
-        List<Invoice> result = new ArrayList<>();
-        invoicesRepository.findAll().forEach(result::add);
+    public List<IncidentBrief> loadIncidentBriefs() {
+        List<IncidentBrief> result = new ArrayList<>();
+        incidentBriefsRepository.findAll().forEach(result::add);
         return result;
     }
 }

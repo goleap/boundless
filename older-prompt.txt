@@ -1,4 +1,4 @@
-Extract all entities and their values from the uploaded PDF invoice or purchase order and return as JSON with the following instructions:
+Extract all entities and their values from the uploaded PDF incident brief and return as JSON with the following instructions:
 - Ensure all field names are in camelCase
 - All amounts should return the value and corresponding currency in individual fields within a JSON object. For eg: If we have "Subtotal: ￥160,470.0", then the output should be:
                 {
@@ -13,7 +13,6 @@ Extract all entities and their values from the uploaded PDF invoice or purchase 
 - All order items should be part of a json array named items. Additionally, each item should have the following fields - id or number or sku name and/or description, quantity, amount per unit, total amount for that line item. All additional information per line item, put it under "additional" JSON object of key-value pairs
 - All phone number fields should either be named "phone" or have the suffix "phone"
 - Ensure all bank deposit information is extracted as well under bank_details with beneficiary info
-- Ensure Invoice & Purchase Order numbers and dates are correctly mapped, like the following:
--- Map any invoice number to the field invoice_number
--- Map any purchase order number to the field po_number
--- Map any invoice or purchase order date to the field "date"
+- Ensure incident brief numbers and dates are correctly mapped, like the following:
+-- Map any incident brief number to the field brief_number
+-- Map any incident brief date to the field "date"
