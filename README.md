@@ -2,7 +2,7 @@
 
 **An open-source Agentic RAG and Data Platform for securing American manufacturing and smart factory environments** — integrating real-time data pipelines, Retrieval-Augmented Generation (RAG), and policy-constrained AI agents to protect Industrial Control Systems (ICS), Operational Technology (OT), and converged IT/OT networks.
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT%20%2B%20RAIL-blue.svg)](LICENSE)
 
 ---
 
@@ -21,7 +21,7 @@ Boundless addresses that gap.
 - **Human-in-the-loop containment**: Automated detection, human-authorized response. No autonomous action on production systems without operator approval.
 - **Vendor-neutral**: No dependency on any single OT vendor, security product, or cloud provider. Designed for adoption across heterogeneous manufacturing environments.
 - **NIST-aligned**: All components mapped to NIST SP 800-82r3 (Guide to OT Security) and the NIST Cybersecurity Framework.
-- **Open and permissively licensed**: Apache 2.0. Designed for nationwide adoption by manufacturing operators, systems integrators, and the broader industrial cybersecurity ecosystem.
+- **Open and responsibly licensed**: MIT + Responsible AI License (RAIL). Permissive for broad adoption, with use restrictions preventing offensive repurposing against the critical infrastructure the platform is designed to protect. Designed for nationwide adoption by manufacturing operators, systems integrators, and the broader industrial cybersecurity ecosystem.
 
 ## Architecture Overview
 
@@ -207,7 +207,7 @@ This project welcomes contributions from the manufacturing cybersecurity communi
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE) for details.
+MIT + Responsible AI License (RAIL) — see [LICENSE](LICENSE) for details. Permissive for broad adoption, with responsible use restrictions preventing offensive repurposing against industrial control systems and critical infrastructure.
 
 ## References
 

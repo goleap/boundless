@@ -36,7 +36,7 @@ This project follows the [Contributor Covenant Code of Conduct](https://www.cont
 
 ## License
 
-By contributing to this project, you agree that your contributions will be licensed under the Apache License 2.0.
+By contributing to this project, you agree that your contributions will be licensed under the MIT + Responsible AI License (RAIL).
 
 ## Contact
 
